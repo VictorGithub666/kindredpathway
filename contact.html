@@ -460,7 +460,12 @@
                         style="height: 100px"
                         required
                       ></textarea>
-                      <div class="h-captcha mt-3" data-captcha="true"></div>
+                      <!-- Web3Forms CAPTCHA -->
+                      <input
+                        type="hidden"
+                        name="captcha_response"
+                        id="captchaResponse"
+                      />
                       <label for="message">Message</label>
                     </div>
                   </div>
@@ -676,6 +681,47 @@
     ></a>
 
     <!-- JavaScript Libraries -->
+    <script>
+      // Web3Forms CAPTCHA integration
+      document.addEventListener("DOMContentLoaded", function () {
+        // Initialize turnstile
+        if (typeof turnstile !== "undefined") {
+          turnstile.ready(function () {
+            turnstile.render("#captchaContainer", {
+              sitekey: "0x4AAAAAAAFYMA8_LnGmW0nR",
+              callback: function (token) {
+                document.getElementById("captchaResponse").value = token;
+              },
+            });
+          });
+        }
+
+        // Add CAPTCHA container to forms
+        const forms = document.querySelectorAll(
+          'form[action="https://api.web3forms.com/submit"]'
+        );
+        forms.forEach((form) => {
+          const captchaContainer = document.createElement("div");
+          captchaContainer.id = "captchaContainer";
+          captchaContainer.className = "mt-3";
+
+          const submitButton = form.querySelector('button[type="submit"]');
+          if (submitButton) {
+            submitButton.parentNode.insertBefore(
+              captchaContainer,
+              submitButton
+            );
+          }
+        });
+      });
+    </script>
+
+    <!-- Add Web3Forms CAPTCHA script -->
+    <script
+      src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+      async
+      defer
+    ></script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="lib/wow/wow.min.js"></script>
