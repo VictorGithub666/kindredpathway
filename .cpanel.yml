@@ -5,6 +5,7 @@ deployment:
     - /bin/cp -R css $DEPLOYPATH
     - /bin/cp -R img $DEPLOYPATH
     - /bin/cp -R js $DEPLOYPATH
+    - /bin/cp -R lib $DEPLOYPATH
     - /bin/cp -R animate $DEPLOYPATH
     - /bin/cp -R counterup $DEPLOYPATH
     - /bin/cp -R easing $DEPLOYPATH
