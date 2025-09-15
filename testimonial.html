@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Kindred Pathway - Testimonials</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="keywords" />
+    <meta content="" name="description" />
+
+    <!-- Favicon -->
+    <link href="img/favi.ico" rel="icon" />
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Roboto:wght@500;700;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Icon Font Stylesheet -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+
+    <!-- Libraries Stylesheet -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link href="lib/animate/animate.min.css" rel="stylesheet" />
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
+    <link
+      href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Template Stylesheet -->
+    <link href="css/style.css" rel="stylesheet" />
+
+    <style>
+      :root {
+        --primary-color: #003366;
+        --secondary-color: #0057a0;
+        --accent-color: #007bff;
+      }
+
+      .bg-primary-custom {
+        background-color: var(--primary-color) !important;
+      }
+
+      .text-primary-custom {
+        color: var(--primary-color) !important;
+      }
+
+      .btn-primary-custom {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+      }
+
+      .btn-primary-custom:hover {
+        background-color: var(--secondary-color);
+        border-color: var(--secondary-color);
+      }
+
+      .border-primary-custom {
+        border-color: var(--primary-color) !important;
+      }
+
+      /* Navbar styling */
+      .navbar-custom {
+        background-color: white !important;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .navbar-custom .nav-link {
+        color: var(--primary-color) !important;
+        font-weight: 500;
+      }
+
+      .navbar-custom .nav-link:hover,
+      .navbar-custom .nav-link.active {
+        color: var(--accent-color) !important;
+      }
+
+      .testimonial-card {
+        transition: transform 0.3s ease;
+      }
+
+      .testimonial-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .rating {
+        color: #ffd700;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Spinner Start -->
+    <div
+      id="spinner"
+      class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center"
+    >
+      <div
+        class="spinner-grow text-primary"
+        style="width: 3rem; height: 3rem"
+        role="status"
+      >
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+    <!-- Spinner End -->
+
+    <!-- Topbar Start -->
+    <div class="container-fluid bg-light p-0 wow fadeIn" data-wow-delay="0.1s">
+      <div class="row gx-0 d-none d-lg-flex">
+        <div class="col-lg-7 px-5 text-start">
+          <div class="h-100 d-inline-flex align-items-center py-3 me-4">
+            <small
+              style="color: #003366"
+              class="fa fa-map-marker-alt me-2"
+            ></small>
+            <small>Westlands, Nairobi, Kenya </small>
+          </div>
+          <div class="h-100 d-inline-flex align-items-center py-3">
+            <small></small>
+          </div>
+        </div>
+        <div class="col-lg-5 px-5 text-end">
+          <div class="h-100 d-inline-flex align-items-center py-3 me-4">
+            <small style="color: #003366" class="fa fa-phone-alt me-2"></small>
+            <small>+254 717 240 044</small>
+          </div>
+          <div class="h-100 d-inline-flex align-items-center">
+            <a
+              style="color: #003366"
+              class="btn btn-sm-square rounded-circle bg-white me-1"
+              href="https://www.facebook.com/"
+              ><i class="fab fa-facebook-f"></i
+            ></a>
+            <a
+              style="color: #003366"
+              class="btn btn-sm-square rounded-circle bg-white me-1"
+              href="https://twitter.com/"
+              ><i class="fab fa-twitter"></i
+            ></a>
+            <a
+              style="color: #003366"
+              class="btn btn-sm-square rounded-circle bg-white me-1"
+              href="https://www.linkedin.com/"
+              ><i class="fab fa-linkedin-in"></i
+            ></a>
+            <a
+              style="color: #003366"
+              class="btn btn-sm-square rounded-circle bg-white me-0"
+              href="https://www.instagram.com/"
+              ><i class="fab fa-instagram"></i
+            ></a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Topbar End -->
+
+    <!-- Navbar Start -->
+    <nav
+      class="navbar navbar-expand-lg sticky-top p-0 wow fadeIn navbar-custom"
+      data-wow-delay="0.1s"
+    >
+      <a
+        href="index.html"
+        class="navbar-brand d-flex align-items-center px-4 px-lg-5"
+      >
+        <h1 class="m-0 text-primary">
+          <img
+            style="image-rendering: auto; max-height: 70px"
+            src="img/kindred-logo.png"
+            alt="Kindred Pathway Logo"
+          />
+        </h1>
+      </a>
+      <button
+        style="border: none"
+        type="button"
+        class="navbar-toggler me-4"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarCollapse"
+      >
+        <span style="color: #003366" class="fas fa-bars"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav ms-auto p-4 p-lg-0">
+          <a style="color: #003366" href="index.html" class="nav-item nav-link"
+            >Home</a
+          >
+          <a style="color: #003366" href="about.html" class="nav-item nav-link"
+            >About</a
+          >
+          <a
+            style="color: #003366"
+            href="service.html"
+            class="nav-item nav-link"
+            >Services</a
+          >
+          <a
+            style="color: #003366"
+            href="testimonial.html"
+            class="nav-item nav-link active"
+            >Testimonials</a
+          >
+          <a
+            style="color: #003366"
+            href="appointment.html"
+            class="nav-item nav-link"
+            >Consultation</a
+          >
+          <a
+            style="color: #003366"
+            href="contact.html"
+            class="nav-item nav-link"
+            >Contact</a
+          >
+        </div>
+      </div>
+    </nav>
+    <!-- Navbar End -->
+
+    <!-- Page Header Start -->
+    <div
+      class="container-fluid page-header py-5 mb-5 wow fadeIn"
+      data-wow-delay="0.1s"
+    >
+      <div class="container text-primary py-5">
+        <h1 class="display-3 mb-3 animated slideInDown">Client Testimonials</h1>
+        <nav aria-label="breadcrumb animated slideInDown">
+          <ol class="breadcrumb text-uppercase mb-0">
+            <li class="breadcrumb-item">
+              <a href="index.html">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="#">Pages</a>
+            </li>
+            <li class="breadcrumb-item text-primary active" aria-current="page">
+              Testimonials
+            </li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+    <!-- Page Header End -->
+
+    <!-- Testimonial Start -->
+    <div class="container-xxl py-5">
+      <div class="container">
+        <div
+          class="text-center mx-auto mb-5 wow fadeInUp"
+          data-wow-delay="0.1s"
+          style="max-width: 600px"
+        >
+          <p class="d-inline-block border rounded-pill py-1 px-4">
+            Testimonials
+          </p>
+          <h1>What Our Clients Say!</h1>
+          <p class="mb-4">
+            Read about the experiences of those who have successfully navigated
+            their immigration journey with Kindred Pathway.
+          </p>
+        </div>
+
+        <!-- Video Testimonials Section -->
+        <div class="row mb-5">
+          <div class="col-12 text-center mb-5">
+            <h2 class="mb-4">Video Testimonials</h2>
+          </div>
+          <div class="col-lg-4 mb-4 wow fadeInUp" data-wow-delay="0.1s">
+            <div class="card h-100 testimonial-card">
+              <div class="card-img-top position-relative">
+                <img
+                  src="https://placehold.co/600x400/003366/FFFFFF/png?text=Video+Testimonial"
+                  class="img-fluid"
+                  alt="Video testimonial thumbnail"
+                />
+                <div class="position-absolute top-50 start-50 translate-middle">
+                  <a
+                    href="#"
+                    class="btn btn-primary btn-lg rounded-circle"
+                    data-bs-toggle="modal"
+                    data-bs-target="#videoModal1"
+                  >
+                    <i class="fas fa-play"></i>
+                  </a>
+                </div>
+              </div>
+              <div class="card-body">
+                <h5 class="card-title">The Omondi Family</h5>
+                <p class="card-text">
+                  "Kindred Pathway made our Canadian dream come true. Watch our
+                  story!"
+                </p>
+                <div class="rating">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 mb-4 wow fadeInUp" data-wow-delay="0.3s">
+            <div class="card h-100 testimonial-card">
+              <div class="card-img-top position-relative">
+                <img
+                  src="https://placehold.co/600x400/0057a0/FFFFFF/png?text=Video+Testimonial"
+                  class="img-fluid"
+                  alt="Video testimonial thumbnail"
+                />
+                <div class="position-absolute top-50 start-50 translate-middle">
+                  <a
+                    href="#"
+                    class="btn btn-primary btn-lg rounded-circle"
+                    data-bs-toggle="modal"
+                    data-bs-target="#videoModal2"
+                  >
+                    <i class="fas fa-play"></i>
+                  </a>
+                </div>
+              </div>
+              <div class="card-body">
+                <h5 class="card-title">James Kariuki</h5>
+                <p class="card-text">
+                  "From Kenya to Germany: My successful work visa experience."
+                </p>
+                <div class="rating">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 mb-4 wow fadeInUp" data-wow-delay="0.5s">
+            <div class="card h-100 testimonial-card">
+              <div class="card-img-top position-relative">
+                <img
+                  src="https://placehold.co/600x400/007bff/FFFFFF/png?text=Video+Testimonial"
+                  class="img-fluid"
+                  alt="Video testimonial thumbnail"
+                />
+                <div class="position-absolute top-50 start-50 translate-middle">
+                  <a
+                    href="#"
+                    class="btn btn-primary btn-lg rounded-circle"
+                    data-bs-toggle="modal"
+                    data-bs-target="#videoModal3"
+                  >
+                    <i class="fas fa-play"></i>
+                  </a>
+                </div>
+              </div>
+              <div class="card-body">
+                <h5 class="card-title">Sarah Atieno</h5>
+                <p class="card-text">
+                  "How Kindred Pathway helped me secure my student visa to the
+                  UK."
+                </p>
+                <div class="rating">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star-half-alt"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Written Testimonials Section -->
+        <div class="row">
+          <div class="col-12 text-center mb-5">
+            <h2 class="mb-4">Written Testimonials</h2>
+          </div>
+        </div>
+
+        <div
+          class="owl-carousel testimonial-carousel wow fadeInUp"
+          data-wow-delay="0.1s"
+        >
+          <div class="testimonial-item text-center">
+            <img
+              class="img-fluid bg-light rounded-circle p-2 mx-auto mb-4"
+              src="https://placehold.co/100x100/003366/FFFFFF/png?text=D"
+              style="width: 100px; height: 100px"
+            />
+            <div
+              style="background-color: #003366"
+              class="testimonial-text rounded text-center p-4"
+            >
+              <p class="mb-4">
+                "Kindred Pathway made our Canadian immigration process seamless.
+                Their expertise with documents and applications saved us time
+                and stress. We're now happily settled in Toronto thanks to their
+                guidance!"
+              </p>
+              <div class="rating">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+              <h5 class="mb-1">David & Grace Mwangi</h5>
+              <span class="fst-italic">Family Immigration to Canada</span>
+            </div>
+          </div>
+          <div class="testimonial-item text-center">
+            <img
+              class="img-fluid bg-light rounded-circle p-2 mx-auto mb-4"
+              src="https://placehold.co/100x100/0057a0/FFFFFF/png?text=B"
+              style="width: 100px; height: 100px"
+            />
+            <div
+              style="background-color: #003366"
+              class="testimonial-text rounded text-center p-4"
+            >
+              <p class="mb-4">
+                "The employment pathway service connected me with a reputable
+                employer in the UK. The entire process was professional and
+                transparent. I started my new job just 3 months after initial
+                consultation!"
+              </p>
+              <div class="rating">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+              <h5 class="mb-1">Brian Otieno</h5>
+              <span class="fst-italic">Work Visa to United Kingdom</span>
+            </div>
+          </div>
+          <div class="testimonial-item text-center">
+            <img
+              class="img-fluid bg-light rounded-circle p-2 mx-auto mb-4"
+              src="https://placehold.co/100x100/007bff/FFFFFF/png?text=S"
+              style="width: 100px; height: 100px"
+            />
+            <div
+              style="background-color: #003366"
+              class="testimonial-text rounded text-center p-4"
+            >
+              <p class="mb-4">
+                "Their document authentication service saved me from multiple
+                headaches. They handled everything from translations to
+                apostille efficiently. I couldn't have managed the German
+                student visa process without them!"
+              </p>
+              <div class="rating">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+              </div>
+              <h5 class="mb-1">Susan Wanjiku</h5>
+              <span class="fst-italic">Student Visa to Germany</span>
+            </div>
+          </div>
+          <div class="testimonial-item text-center">
+            <img
+              class="img-fluid bg-light rounded-circle p-2 mx-auto mb-4"
+              src="https://placehold.co/100x100/003366/FFFFFF/png?text=J"
+              style="width: 100px; height: 100px"
+            />
+            <div
+              style="background-color: #003366"
+              class="testimonial-text rounded text-center p-4"
+            >
+              <p class="mb-4">
+                "After a previous visa rejection, I was losing hope. Kindred
+                Pathway helped me appeal successfully and now I'm working in
+                Australia. Their legal expertise made all the difference!"
+              </p>
+              <div class="rating">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+              <h5 class="mb-1">John Kamau</h5>
+              <span class="fst-italic">Work Visa to Australia</span>
+            </div>
+          </div>
+          <div class="testimonial-item text-center">
+            <img
+              class="img-fluid bg-light rounded-circle p-2 mx-auto mb-4"
+              src="https://placehold.co/100x100/0057a0/FFFFFF/png?text=M"
+              style="width: 100px; height: 100px"
+            />
+            <div
+              style="background-color: #003366"
+              class="testimonial-text rounded text-center p-4"
+            >
+              <p class="mb-4">
+                "The relocation support was exceptional! They helped us find
+                housing, schools for our children, and even connected us with
+                local community groups. We felt welcomed from day one in
+                Canada."
+              </p>
+              <div class="rating">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+              <h5 class="mb-1">Mary & Robert Ndirangu</h5>
+              <span class="fst-italic">Family Relocation to Canada</span>
+            </div>
+          </div>
+          <div class="testimonial-item text-center">
+            <img
+              class="img-fluid bg-light rounded-circle p-2 mx-auto mb-4"
+              src="https://placehold.co/100x100/007bff/FFFFFF/png?text=P"
+              style="width: 100px; height: 100px"
+            />
+            <div
+              style="background-color: #003366"
+              class="testimonial-text rounded text-center p-4"
+            >
+              <p class="mb-4">
+                "I was skeptical about using an immigration service, but Kindred
+                Pathway proved me wrong. They were transparent about costs and
+                kept me updated throughout the entire process. Highly
+                recommend!"
+              </p>
+              <div class="rating">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+              <h5 class="mb-1">Peter Maina</h5>
+              <span class="fst-italic">Business Visa to USA</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Success Stories Section -->
+        <div class="row mt-5">
+          <div class="col-12 text-center mb-5">
+            <h2 class="mb-4">Success Stories</h2>
+          </div>
+          <div class="col-lg-6 mb-4 wow fadeInUp" data-wow-delay="0.1s">
+            <div class="card h-100">
+              <div class="card-body">
+                <h4 class="card-title">
+                  From Rejection to Approval: James's Journey
+                </h4>
+                <p class="card-text">
+                  James had his UK work visa application rejected twice before
+                  coming to Kindred Pathway. Our legal team identified the
+                  issues, prepared a stronger application, and successfully
+                  appealed the decision.
+                </p>
+                <p class="card-text">
+                  <small class="text-muted">Processing time: 4 months</small>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6 mb-4 wow fadeInUp" data-wow-delay="0.3s">
+            <div class="card h-100">
+              <div class="card-body">
+                <h4 class="card-title">Family Reunification: The Omondis</h4>
+                <p class="card-text">
+                  The Omondi family wanted to join their son in Canada but faced
+                  complex documentation requirements. We streamlined the process
+                  and helped reunite them in just 6 months.
+                </p>
+                <p class="card-text">
+                  <small class="text-muted">Processing time: 6 months</small>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Testimonial End -->
+
+    <!-- Video Modals -->
+    <div
+      class="modal fade"
+      id="videoModal1"
+      tabindex="-1"
+      aria-labelledby="videoModal1Label"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="videoModal1Label">
+              The Omondi Family's Success Story
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="ratio ratio-16x9">
+              <img
+                src="https://placehold.co/800x450/003366/FFFFFF/png?text=Video+Placeholder"
+                class="img-fluid"
+                alt="Video placeholder"
+              />
+            </div>
+            <p class="mt-3">
+              The Omondi family shares their experience moving to Canada with
+              Kindred Pathway's assistance.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="videoModal2"
+      tabindex="-1"
+      aria-labelledby="videoModal2Label"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="videoModal2Label">
+              James's Work Visa Success
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="ratio ratio-16x9">
+              <img
+                src="https://placehold.co/800x450/0057a0/FFFFFF/png?text=Video+Placeholder"
+                class="img-fluid"
+                alt="Video placeholder"
+              />
+            </div>
+            <p class="mt-3">
+              James discusses how Kindred Pathway helped him secure a work visa
+              for Germany.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="videoModal3"
+      tabindex="-1"
+      aria-labelledby="videoModal3Label"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="videoModal3Label">
+              Sarah's Student Visa Journey
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="ratio ratio-16x9">
+              <img
+                src="https://placehold.co/800x450/007bff/FFFFFF/png?text=Video+Placeholder"
+                class="img-fluid"
+                alt="Video placeholder"
+              />
+            </div>
+            <p class="mt-3">
+              Sarah shares her experience obtaining a student visa for the UK
+              with Kindred Pathway's guidance.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Start -->
+    <div
+      class="container-fluid bg-dark text-light footer mt-5 pt-5 wow fadeIn"
+      data-wow-delay="0.1s"
+    >
+      <div class="container py-5">
+        <div class="row g-5">
+          <div class="col-lg-3 col-md-6">
+            <h5 class="text-light mb-4">Address</h5>
+            <p class="mb-2">
+              <i class="fa fa-map-marker-alt me-3"></i>Westlands, Nairobi, Kenya
+            </p>
+            <p class="mb-2">
+              <i class="fa fa-phone-alt me-3"></i>+254 717 240 044
+            </p>
+            <p class="mb-2">
+              <i class="fa fa-envelope me-3"></i>info@kindredpathway.org
+            </p>
+            <div class="d-flex pt-2">
+              <a
+                class="btn btn-outline-light btn-social rounded-circle"
+                href="https://twitter.com/"
+                ><i class="fab fa-twitter"></i
+              ></a>
+              <a
+                class="btn btn-outline-light btn-social rounded-circle"
+                href="https://www.facebook.com/"
+                ><i class="fab fa-facebook-f"></i
+              ></a>
+              <a
+                class="btn btn-outline-light btn-social rounded-circle"
+                href="https://www.youtube.com/"
+                ><i class="fab fa-youtube"></i
+              ></a>
+              <a
+                class="btn btn-outline-light btn-social rounded-circle"
+                href="https://www.linkedin.com/"
+                ><i class="fab fa-linkedin-in"></i
+              ></a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <h5 class="text-light mb-4">Services</h5>
+            <a class="btn btn-link" href="service.html#immigration"
+              >Legal Immigration</a
+            >
+            <a class="btn btn-link" href="service.html#relocation"
+              >Relocation Support</a
+            >
+            <a class="btn btn-link" href="service.html#legal"
+              >Legal Advisory
+            </a>
+            <a class="btn btn-link" href="service.html#documents"
+              >Document Authentication</a
+            >
+            <a class="btn btn-link" href="service.html#employment"
+              >Employment Pathways</a
+            >
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <h5 class="text-light mb-4">Quick Links</h5>
+            <a class="btn btn-link" href="about.html">About Us</a>
+            <a class="btn btn-link" href="contact.html">Contact Us</a>
+            <a class="btn btn-link" href="service.html">Our Services</a>
+            <a class="btn btn-link" href="appointment.html">Consultation</a>
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="copyright">
+          <div class="row">
+            <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+              &copy;
+              <a class="border-bottom" href="https://kindredpathway.org"
+                >Kindred Pathway</a
+              >, All Right Reserved.
+            </div>
+            <div class="col-md-6 text-center text-md-end">
+              Designed By <a class="border-bottom" href="">Victor Kivungi</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Footer End -->
+
+    <!-- Back to Top -->
+    <a
+      href="#"
+      class="btn btn-lg btn-primary btn-lg-square rounded-circle back-to-top"
+      ><i class="bi bi-arrow-up"></i
+    ></a>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/wow/wow.min.js"></script>
+    <script src="lib/easing/easing.min.js"></script>
+    <script src="lib/waypoints/waypoints.min.js"></script>
+    <script src="lib/counterup/counterup.min.js"></script>
+    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="lib/tempusdominus/js/moment.min.js"></script>
+    <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
+    <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="js/main.js"></script>
+  </body>
+</html>
