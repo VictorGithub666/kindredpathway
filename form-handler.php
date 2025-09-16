@@ -72,7 +72,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <body>
           <div class="container">
             <div class="header">
-              <h2>📩 New ' . $formType . '</h2>
+              <h2> New ' . $formType . '</h2>
             </div>
             <div class="content">
               <p><span class="label">Name:</span> ' . $name . '</p>
