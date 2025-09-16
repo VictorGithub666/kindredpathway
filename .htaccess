@@ -1,10 +1,17 @@
+<IfModule mod_rewrite.c>
 RewriteEngine On
+
+# Force HTTPS
 RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
+# Allow PHP files to handle POST normally
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*\.php)$ $1 [L]
+</IfModule>
 
 # php -- BEGIN cPanel-generated handler, do not edit
-# Set the “ea-php83” package as the default “PHP” programming language.
 <IfModule mime_module>
   AddHandler application/x-httpd-ea-php83 .php .php8 .phtml
 </IfModule>
