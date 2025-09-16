@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $mail = new PHPMailer(true);
         $mail->isSMTP();
-        $mail->Host       = 'lim106b.superfasthost.cloud';
+        $mail->Host       = 'lim106.truehost.cloud';
         $mail->SMTPAuth   = true;
         $mail->Username   = 'info@kindredpathway.org';
         $mail->Password   = 'info@kindred.pathway'; // ⚠️ Make sure this is the REAL password
