@@ -121,6 +121,18 @@
       .office-hours li:last-child {
         border-bottom: none;
       }
+      .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+      }
+
+      .alert-danger {
+        color: #a94442;
+        background-color: #f2dede;
+        border-color: #ebccd1;
+      }
     </style>
   </head>
 
@@ -363,29 +375,7 @@
                 here to answer your questions and guide you through the process.
                 Reach out to us today!
               </p>
-              <form action="https://api.web3forms.com/submit" method="POST">
-                <!-- Replace with your Access Key -->
-                <input
-                  type="hidden"
-                  name="access_key"
-                  value="fc192244-55e9-4c24-8ddc-c0570c605994"
-                />
-                <input
-                  type="hidden"
-                  name="subject"
-                  value="New Contact Form Submission from Kindred Pathway"
-                />
-                <input
-                  type="hidden"
-                  name="redirect"
-                  value="https://web3forms.com/success"
-                />
-                <input
-                  type="checkbox"
-                  name="botcheck"
-                  id=""
-                  style="display: none"
-                />
+              <form action="form-handler.php" method="POST">
                 <div class="row g-3">
                   <div class="col-md-6">
                     <div class="form-floating">
@@ -460,12 +450,6 @@
                         style="height: 100px"
                         required
                       ></textarea>
-                      <!-- Web3Forms CAPTCHA -->
-                      <input
-                        type="hidden"
-                        name="captcha_response"
-                        id="captchaResponse"
-                      />
                       <label for="message">Message</label>
                     </div>
                   </div>
@@ -682,46 +666,27 @@
 
     <!-- JavaScript Libraries -->
     <script>
-      // Web3Forms CAPTCHA integration
       document.addEventListener("DOMContentLoaded", function () {
-        // Initialize turnstile
-        if (typeof turnstile !== "undefined") {
-          turnstile.ready(function () {
-            turnstile.render("#captchaContainer", {
-              sitekey: "0x4AAAAAAAFYMA8_LnGmW0nR",
-              callback: function (token) {
-                document.getElementById("captchaResponse").value = token;
-              },
-            });
-          });
-        }
+        // Check for error parameter in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has("error")) {
+          // Create error message element
+          const errorDiv = document.createElement("div");
+          errorDiv.className = "alert alert-danger mb-4";
+          errorDiv.innerHTML =
+            "There was a problem with your submission. Please check your information and try again.";
 
-        // Add CAPTCHA container to forms
-        const forms = document.querySelectorAll(
-          'form[action="https://api.web3forms.com/submit"]'
-        );
-        forms.forEach((form) => {
-          const captchaContainer = document.createElement("div");
-          captchaContainer.id = "captchaContainer";
-          captchaContainer.className = "mt-3";
+          // Insert at the top of the form
+          const form = document.querySelector("form");
+          if (form) {
+            form.parentNode.insertBefore(errorDiv, form);
 
-          const submitButton = form.querySelector('button[type="submit"]');
-          if (submitButton) {
-            submitButton.parentNode.insertBefore(
-              captchaContainer,
-              submitButton
-            );
+            // Scroll to error message
+            errorDiv.scrollIntoView({ behavior: "smooth" });
           }
-        });
+        }
       });
     </script>
-
-    <!-- Add Web3Forms CAPTCHA script -->
-    <script
-      src="https://challenges.cloudflare.com/turnstile/v0/api.js"
-      async
-      defer
-    ></script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="lib/wow/wow.min.js"></script>
