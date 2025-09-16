@@ -16,14 +16,14 @@ require 'src/SMTP.php';
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     try {
         // Collect and sanitize form data
-        $name = htmlspecialchars(trim($_POST['name'] ?? ''));
-        $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
-        $phone = htmlspecialchars(trim($_POST['phone'] ?? ''));
-        $service = htmlspecialchars(trim($_POST['service'] ?? ''));
+        $name        = htmlspecialchars(trim($_POST['name'] ?? ''));
+        $email       = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
+        $phone       = htmlspecialchars(trim($_POST['phone'] ?? ''));
+        $service     = htmlspecialchars(trim($_POST['service'] ?? ''));
         $destination = htmlspecialchars(trim($_POST['destination'] ?? ''));
-        $date = htmlspecialchars(trim($_POST['date'] ?? ''));
-        $time = htmlspecialchars(trim($_POST['time'] ?? ''));
-        $message = htmlspecialchars(trim($_POST['message'] ?? ''));
+        $date        = htmlspecialchars(trim($_POST['date'] ?? ''));
+        $time        = htmlspecialchars(trim($_POST['time'] ?? ''));
+        $message     = htmlspecialchars(trim($_POST['message'] ?? ''));
 
         if (empty($name) || empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new Exception("Please fill in all required fields correctly.");
@@ -31,18 +31,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $formType = isset($_POST['consultation_type']) ? 'Consultation Request' : 'Contact Form';
 
+        // Configure PHPMailer
         $mail = new PHPMailer(true);
         $mail->isSMTP();
-        $mail->Host       = 'lim106.truehost.cloud';
+        $mail->Host       = 'lim106.truehost.cloud';   // your host
         $mail->SMTPAuth   = true;
         $mail->Username   = 'info@kindredpathway.org';
-        $mail->Password   = 'info@kindred.pathway'; // ⚠️ Make sure this is the REAL password
+        $mail->Password   = 'info@kindred.pathway';    // ⚠️ replace with real password
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port       = 587;
 
-        // Debugging (comment out in production)
-        $mail->SMTPDebug = 2;
-        $mail->Debugoutput = 'error_log';
+        // Debugging (disable in production)
+        // $mail->SMTPDebug = 2;
+        // $mail->Debugoutput = 'error_log';
 
         $mail->setFrom('info@kindredpathway.org', 'Kindred Pathway Website');
         $mail->addAddress('info@kindredpathway.org', 'Kindred Pathway');
@@ -51,22 +52,64 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $mail->isHTML(true);
         $mail->Subject = "New $formType from Website";
 
-        $body  = "<h2>New $formType</h2>";
-        $body .= "<p><strong>Name:</strong> $name</p>";
-        $body .= "<p><strong>Email:</strong> $email</p>";
-        $body .= "<p><strong>Phone:</strong> $phone</p>";
-        if ($service)     $body .= "<p><strong>Service:</strong> $service</p>";
-        if ($destination) $body .= "<p><strong>Destination:</strong> $destination</p>";
-        if ($date)        $body .= "<p><strong>Date:</strong> $date</p>";
-        if ($time)        $body .= "<p><strong>Time:</strong> $time</p>";
-        $body .= "<p><strong>Message:</strong><br>" . nl2br($message) . "</p>";
+        // Build styled HTML email body
+        $email_body = '
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <style>
+            body { font-family: Arial, sans-serif; background-color: #f4f6f8; margin:0; padding:0; }
+            .container { background:#fff; max-width:600px; margin:20px auto; border-radius:8px; overflow:hidden; border:1px solid #ddd; }
+            .header { background:#003366; color:#fff; padding:20px; text-align:center; }
+            .header h2 { margin:0; }
+            .content { padding:20px; color:#333; }
+            .content p { margin:8px 0; line-height:1.5; }
+            .label { font-weight:bold; color:#003366; }
+            .footer { background:#f4f6f8; text-align:center; padding:15px; font-size:12px; color:#777; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h2>📩 New ' . $formType . '</h2>
+            </div>
+            <div class="content">
+              <p><span class="label">Name:</span> ' . $name . '</p>
+              <p><span class="label">Email:</span> ' . $email . '</p>
+              <p><span class="label">Phone:</span> ' . $phone . '</p>';
+        
+        if ($service) {
+            $email_body .= '<p><span class="label">Service:</span> ' . $service . '</p>';
+        }
+        if ($destination) {
+            $email_body .= '<p><span class="label">Destination:</span> ' . $destination . '</p>';
+        }
+        if ($date) {
+            $email_body .= '<p><span class="label">Preferred Date:</span> ' . $date . '</p>';
+        }
+        if ($time) {
+            $email_body .= '<p><span class="label">Preferred Time:</span> ' . $time . '</p>';
+        }
 
-        $mail->Body    = $body;
-        $mail->AltBody = strip_tags($body);
+        $email_body .= '
+              <p><span class="label">Message:</span></p>
+              <p>' . nl2br($message) . '</p>
+            </div>
+            <div class="footer">
+              <p>Kindred Pathway | Immigration & Relocation Support</p>
+            </div>
+          </div>
+        </body>
+        </html>';
+
+        $mail->Body    = $email_body;
+        $mail->AltBody = strip_tags($email_body);
 
         if ($mail->send()) {
-            echo "✅ Mail sent successfully!";
-            // header('Location: thank-you.html'); exit; // uncomment for production
+            // In production redirect to thank you page
+            header('Location: thank-you.html');
+            exit;
         } else {
             throw new Exception("Mailer Error: " . $mail->ErrorInfo);
         }
