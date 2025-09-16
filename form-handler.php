@@ -51,7 +51,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $mail->Port       = 587;
         
         // Enable debugging if needed
-        // $mail->SMTPDebug = 2; // Uncomment for debugging
+        $mail->SMTPDebug = 2; // Uncomment for debugging
         
         // Recipients
         $mail->setFrom('info@kindredpathway.org', 'Kindred Pathway Website');
