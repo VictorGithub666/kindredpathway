@@ -20,13 +20,32 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $email       = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
         $phone       = htmlspecialchars(trim($_POST['phone'] ?? ''));
         $service     = htmlspecialchars(trim($_POST['service'] ?? ''));
+        $visaType    = htmlspecialchars(trim($_POST['visaType'] ?? ''));
+        $otherVisaType = htmlspecialchars(trim($_POST['otherVisaType'] ?? ''));
         $destination = htmlspecialchars(trim($_POST['destination'] ?? ''));
+        $otherDestination = htmlspecialchars(trim($_POST['otherDestination'] ?? ''));
         $date        = htmlspecialchars(trim($_POST['date'] ?? ''));
         $time        = htmlspecialchars(trim($_POST['time'] ?? ''));
         $message     = htmlspecialchars(trim($_POST['message'] ?? ''));
 
         if (empty($name) || empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new Exception("Please fill in all required fields correctly.");
+        }
+
+        // Handle visa type logic
+        $finalVisaType = $visaType;
+        if ($visaType === 'Other' && !empty($otherVisaType)) {
+            $finalVisaType = $otherVisaType . " (Other)";
+        } elseif ($visaType === 'Other' && empty($otherVisaType)) {
+            throw new Exception("Please specify the visa type when selecting 'Other'.");
+        }
+
+        // Handle destination logic
+        $finalDestination = $destination;
+        if ($destination === 'Other' && !empty($otherDestination)) {
+            $finalDestination = $otherDestination . " (Other)";
+        } elseif ($destination === 'Other' && empty($otherDestination)) {
+            throw new Exception("Please specify the destination country when selecting 'Other'.");
         }
 
         $formType = isset($_POST['consultation_type']) ? 'Consultation Request' : 'Contact Form';
@@ -82,8 +101,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         if ($service) {
             $email_body .= '<p><span class="label">Service:</span> ' . $service . '</p>';
         }
-        if ($destination) {
-            $email_body .= '<p><span class="label">Destination:</span> ' . $destination . '</p>';
+        if ($finalVisaType) {
+            $email_body .= '<p><span class="label">Visa Type:</span> ' . $finalVisaType . '</p>';
+        }
+        if ($finalDestination) {
+            $email_body .= '<p><span class="label">Destination Country:</span> ' . $finalDestination . '</p>';
         }
         if ($date) {
             $email_body .= '<p><span class="label">Preferred Date:</span> ' . $date . '</p>';
@@ -114,8 +136,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             throw new Exception("Mailer Error: " . $mail->ErrorInfo);
         }
     } catch (Exception $e) {
-        echo "❌ Error: " . $e->getMessage();
+        // Redirect back with error
+        header('Location: ' . $_SERVER['HTTP_REFERER'] . '?error=1&message=' . urlencode($e->getMessage()));
+        exit;
     }
 } else {
-    echo "❌ Invalid request method: " . $_SERVER["REQUEST_METHOD"];
+    // Not a POST request
+    header('Location: index.html');
+    exit;
 }

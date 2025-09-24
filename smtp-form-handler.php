@@ -22,7 +22,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
         $phone = isset($_POST['phone']) ? htmlspecialchars(trim($_POST['phone'])) : '';
         $service = isset($_POST['service']) ? htmlspecialchars(trim($_POST['service'])) : '';
+        $visaType = isset($_POST['visaType']) ? htmlspecialchars(trim($_POST['visaType'])) : '';
+        $otherVisaType = isset($_POST['otherVisaType']) ? htmlspecialchars(trim($_POST['otherVisaType'])) : '';
         $destination = isset($_POST['destination']) ? htmlspecialchars(trim($_POST['destination'])) : '';
+        $otherDestination = isset($_POST['otherDestination']) ? htmlspecialchars(trim($_POST['otherDestination'])) : '';
         $date = isset($_POST['date']) ? htmlspecialchars(trim($_POST['date'])) : '';
         $time = isset($_POST['time']) ? htmlspecialchars(trim($_POST['time'])) : '';
         $message = isset($_POST['message']) ? htmlspecialchars(trim($_POST['message'])) : '';
@@ -30,6 +33,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Validate essential fields
         if (empty($name) || empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new Exception("Please fill in all required fields correctly.");
+        }
+        
+        // Handle visa type logic
+        $finalVisaType = $visaType;
+        if ($visaType === 'Other' && !empty($otherVisaType)) {
+            $finalVisaType = $otherVisaType . " (Other)";
+        } elseif ($visaType === 'Other' && empty($otherVisaType)) {
+            throw new Exception("Please specify the visa type when selecting 'Other'.");
+        }
+
+        // Handle destination logic
+        $finalDestination = $destination;
+        if ($destination === 'Other' && !empty($otherDestination)) {
+            $finalDestination = $otherDestination . " (Other)";
+        } elseif ($destination === 'Other' && empty($otherDestination)) {
+            throw new Exception("Please specify the destination country when selecting 'Other'.");
         }
         
         // Determine form type
@@ -72,8 +91,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $email_body .= "<p><strong>Service:</strong> $service</p>";
         }
         
-        if (!empty($destination)) {
-            $email_body .= "<p><strong>Destination Country:</strong> $destination</p>";
+        if (!empty($finalVisaType)) {
+            $email_body .= "<p><strong>Visa Type:</strong> $finalVisaType</p>";
+        }
+        
+        if (!empty($finalDestination)) {
+            $email_body .= "<p><strong>Destination Country:</strong> $finalDestination</p>";
         }
         
         if (!empty($date)) {

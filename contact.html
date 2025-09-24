@@ -133,6 +133,14 @@
         background-color: #f2dede;
         border-color: #ebccd1;
       }
+
+      /* New styles for dynamic fields */
+      .hidden {
+        display: none;
+      }
+      .required-asterisk {
+        color: red;
+      }
     </style>
   </head>
 
@@ -385,7 +393,7 @@
                 here to answer your questions and guide you through the process.
                 Reach out to us today!
               </p>
-              <form action="form-handler.php" method="POST">
+              <form action="form-handler.php" method="POST" id="contactForm">
                 <div class="row g-3">
                   <div class="col-md-6">
                     <div class="form-floating">
@@ -397,7 +405,10 @@
                         placeholder="Your Name"
                         required
                       />
-                      <label for="name">Your Name</label>
+                      <label for="name"
+                        >Your Name
+                        <span class="required-asterisk">*</span></label
+                      >
                     </div>
                   </div>
                   <div class="col-md-6">
@@ -410,7 +421,10 @@
                         placeholder="Your Email"
                         required
                       />
-                      <label for="email">Your Email</label>
+                      <label for="email"
+                        >Your Email
+                        <span class="required-asterisk">*</span></label
+                      >
                     </div>
                   </div>
                   <div class="col-md-6">
@@ -427,8 +441,15 @@
                   </div>
                   <div class="col-md-6">
                     <div class="form-floating">
-                      <select class="form-select" id="service" name="service">
-                        <option selected>Select Service</option>
+                      <select
+                        class="form-select"
+                        id="service"
+                        name="service"
+                        required
+                      >
+                        <option value="" selected disabled>
+                          Select Service
+                        </option>
                         <option value="Legal Immigration Support">
                           Legal Immigration Support
                         </option>
@@ -445,11 +466,142 @@
                         <option value="Family Immigration">
                           Family Immigration
                         </option>
-                        <option value="Other">Other</option>
                       </select>
-                      <label for="service">Service Interested In</label>
+                      <label for="service"
+                        >Service Interested In
+                        <span class="required-asterisk">*</span></label
+                      >
                     </div>
                   </div>
+
+                  <!-- Visa Type Field -->
+                  <div class="col-md-6">
+                    <div class="form-floating">
+                      <select
+                        class="form-select"
+                        id="visaType"
+                        name="visaType"
+                        required
+                      >
+                        <option value="" selected disabled>
+                          Select Visa Type
+                        </option>
+                        <optgroup label="USA">
+                          <option value="B-1/B-2 Tourist/Business">
+                            B-1/B-2 Tourist/Business
+                          </option>
+                          <option value="F-1 Student">F-1 Student</option>
+                          <option value="H-1B Specialty Occupation">
+                            H-1B Specialty Occupation
+                          </option>
+                          <option value="J-1 Exchange Visitor">
+                            J-1 Exchange Visitor
+                          </option>
+                          <option value="L-1 Intracompany Transfer">
+                            L-1 Intracompany Transfer
+                          </option>
+                          <option value="O-1 Extraordinary Ability">
+                            O-1 Extraordinary Ability
+                          </option>
+                          <option value="Green Card (Permanent Residence)">
+                            Green Card (Permanent Residence)
+                          </option>
+                        </optgroup>
+                        <optgroup label="Canada">
+                          <option value="Visitor Visa">Visitor Visa</option>
+                          <option value="Study Permit">Study Permit</option>
+                          <option value="Work Permit">Work Permit</option>
+                          <option value="Express Entry (PR)">
+                            Express Entry (PR)
+                          </option>
+                          <option value="Provincial Nominee Program (PNP)">
+                            Provincial Nominee Program (PNP)
+                          </option>
+                          <option value="Start-up Visa">Start-up Visa</option>
+                          <option value="Family Sponsorship">
+                            Family Sponsorship
+                          </option>
+                        </optgroup>
+                        <optgroup label="UK">
+                          <option value="Standard Visitor Visa">
+                            Standard Visitor Visa
+                          </option>
+                          <option value="Student Visa (Tier 4)">
+                            Student Visa (Tier 4)
+                          </option>
+                          <option value="Skilled Worker Visa">
+                            Skilled Worker Visa
+                          </option>
+                          <option value="Global Talent Visa">
+                            Global Talent Visa
+                          </option>
+                          <option value="Start-up Visa">Start-up Visa</option>
+                          <option value="Innovator Visa">Innovator Visa</option>
+                          <option value="Family Visa">Family Visa</option>
+                        </optgroup>
+                        <option value="Other">Other (Please specify)</option>
+                      </select>
+                      <label for="visaType"
+                        >Visa Type
+                        <span class="required-asterisk">*</span></label
+                      >
+                    </div>
+                  </div>
+
+                  <div id="otherVisaTypeContainer" class="col-md-6 hidden">
+                    <div class="form-floating">
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="otherVisaType"
+                        name="otherVisaType"
+                        placeholder="Specify Visa Type"
+                      />
+                      <label for="otherVisaType"
+                        >Specify Visa Type
+                        <span class="required-asterisk">*</span></label
+                      >
+                    </div>
+                  </div>
+
+                  <!-- Destination Country Field -->
+                  <div class="col-md-6">
+                    <div class="form-floating">
+                      <select
+                        class="form-select"
+                        id="destination"
+                        name="destination"
+                      >
+                        <option value="" selected disabled>
+                          Select Destination Country
+                        </option>
+                        <option value="USA">USA</option>
+                        <option value="Canada">Canada</option>
+                        <option value="UK">UK</option>
+                        <option value="Australia">Australia</option>
+                        <option value="Germany">Germany</option>
+                        <option value="Other">Other</option>
+                      </select>
+                      <label for="destination">Destination Country</label>
+                    </div>
+                  </div>
+
+                  <div id="otherDestinationContainer" class="col-md-6 hidden">
+                    <div class="form-floating">
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="otherDestination"
+                        name="otherDestination"
+                        placeholder="Specify Country"
+                      />
+                      <label for="otherDestination"
+                        >Specify Country
+                        <span class="required-asterisk">*</span></label
+                      >
+                    </div>
+                  </div>
+
                   <div class="col-12">
                     <div class="form-floating">
                       <textarea
@@ -460,7 +612,9 @@
                         style="height: 100px"
                         required
                       ></textarea>
-                      <label for="message">Message</label>
+                      <label for="message"
+                        >Message <span class="required-asterisk">*</span></label
+                      >
                     </div>
                   </div>
                   <div class="col-12">
@@ -699,6 +853,76 @@
             // Scroll to error message
             errorDiv.scrollIntoView({ behavior: "smooth" });
           }
+        }
+
+        // Visa Type dropdown functionality
+        const visaTypeSelect = document.getElementById("visaType");
+        const otherVisaTypeContainer = document.getElementById(
+          "otherVisaTypeContainer"
+        );
+        const otherVisaTypeInput = document.getElementById("otherVisaType");
+
+        if (visaTypeSelect) {
+          visaTypeSelect.addEventListener("change", function () {
+            if (this.value === "Other") {
+              otherVisaTypeContainer.classList.remove("hidden");
+              otherVisaTypeInput.setAttribute("required", "required");
+            } else {
+              otherVisaTypeContainer.classList.add("hidden");
+              otherVisaTypeInput.removeAttribute("required");
+              otherVisaTypeInput.value = "";
+            }
+          });
+        }
+
+        // Destination Country dropdown functionality
+        const destinationSelect = document.getElementById("destination");
+        const otherDestinationContainer = document.getElementById(
+          "otherDestinationContainer"
+        );
+        const otherDestinationInput =
+          document.getElementById("otherDestination");
+
+        if (destinationSelect) {
+          destinationSelect.addEventListener("change", function () {
+            if (this.value === "Other") {
+              otherDestinationContainer.classList.remove("hidden");
+              otherDestinationInput.setAttribute("required", "required");
+            } else {
+              otherDestinationContainer.classList.add("hidden");
+              otherDestinationInput.removeAttribute("required");
+              otherDestinationInput.value = "";
+            }
+          });
+        }
+
+        // Form validation
+        const form = document.getElementById("contactForm");
+        if (form) {
+          form.addEventListener("submit", function (e) {
+            // Check if "Other" is selected but no value provided
+            if (
+              visaTypeSelect &&
+              visaTypeSelect.value === "Other" &&
+              !otherVisaTypeInput.value.trim()
+            ) {
+              e.preventDefault();
+              alert("Please specify the visa type");
+              otherVisaTypeInput.focus();
+              return;
+            }
+
+            if (
+              destinationSelect &&
+              destinationSelect.value === "Other" &&
+              !otherDestinationInput.value.trim()
+            ) {
+              e.preventDefault();
+              alert("Please specify the destination country");
+              otherDestinationInput.focus();
+              return;
+            }
+          });
         }
       });
     </script>
