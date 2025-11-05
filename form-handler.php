@@ -1,5 +1,5 @@
 <?php
-// form-handler.php - SECURE VERSION WITH SPAM FILTERING & JUNK FOLDER ROUTING
+// form-handler.php - SECURE VERSION WITH DIRECT JUNK FOLDER ROUTING
 
 // Enable error reporting (disable in production)
 ini_set('display_errors', 1);
@@ -137,20 +137,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $mail->setFrom('info@kindredpathway.org', 'Kindred Pathway Website');
         
         if ($isSpam) {
-            // ROUTE SPAM DIRECTLY TO JUNK FOLDER
-            $mail->addAddress('info@kindredpathway.org', 'Kindred Pathway');
+            // SOLUTION 1: Send spam to a different address that goes to Junk
+            // Use "spam@" prefix - most email systems will treat this as lower priority
+            $mail->addAddress('spam@kindredpathway.org', 'SPAM - Kindred Pathway');
             
-            // Add headers to force Roundcube to treat as spam
-            $mail->addCustomHeader('X-Priority', '5 (Lowest)');
-            $mail->addCustomHeader('X-MSMail-Priority', 'Low');
-            $mail->addCustomHeader('Importance', 'Low');
-            $mail->addCustomHeader('X-Spam-Flag', 'YES');
-            $mail->addCustomHeader('X-Spam-Status', 'Yes');
-            $mail->addCustomHeader('X-Spam-Level', '*****');
+            // Add aggressive spam headers
+            $mail->addCustomHeader('X-Priority', '5');
             $mail->addCustomHeader('Precedence', 'bulk');
-            $mail->addCustomHeader('X-Auto-Response-Suppress', 'OOF, AutoReply');
+            $mail->addCustomHeader('X-Auto-Response-Suppress', 'All');
+            $mail->addCustomHeader('Auto-Submitted', 'auto-generated');
             
-            $mail->Subject = "[SPAM] New $formType from Website - AUTO FILTERED";
+            $mail->Subject = "🚫 SPAM: $formType from $name";
         } else {
             // Send legitimate emails normally
             $mail->addAddress('info@kindredpathway.org', 'Kindred Pathway');
@@ -158,11 +155,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
         
         $mail->addReplyTo($email, $name);
-
         $mail->isHTML(true);
 
-        // Build styled HTML email body
-        $spamIndicator = $isSpam ? '<div style="background: #ff0000; color: white; padding: 10px; text-align: center; font-weight: bold;">🚫 AUTOMATED SPAM FILTER - This email was detected as spam and routed to Junk folder</div>' : '';
+        // Build email body
+        $spamWarning = $isSpam ? '<div style="background: #ff0000; color: white; padding: 15px; text-align: center; font-weight: bold; font-size: 16px;">🚫 AUTOMATED SPAM FILTER - This email was detected as spam</div>' : '';
         
         $email_body = '
         <!DOCTYPE html>
@@ -178,25 +174,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             .content p { margin:8px 0; line-height:1.5; }
             .label { font-weight:bold; color:#003366; }
             .footer { background:#f4f6f8; text-align:center; padding:15px; font-size:12px; color:#777; }
-            .spam-warning { background: #fff3cd; border: 1px solid #ffeaa7; padding: 10px; margin: 10px 0; border-radius: 4px; }
           </style>
         </head>
         <body>
           <div class="container">
-            ' . $spamIndicator . '
+            ' . $spamWarning . '
             <div class="header">
               <h2> New ' . $formType . '</h2>
             </div>
-            <div class="content">';
-              
-        if ($isSpam) {
-            $email_body .= '<div class="spam-warning">
-                <strong> SPAM DETECTED:</strong> This message was automatically flagged as spam and routed to your Junk folder.<br>
-                <strong>Detected Patterns:</strong> SEO/Affiliate marketing content
-            </div>';
-        }
-              
-        $email_body .= '
+            <div class="content">
               <p><span class="label">Name:</span> ' . $name . '</p>
               <p><span class="label">Email:</span> ' . $email . '</p>
               <p><span class="label">Phone:</span> ' . $phone . '</p>';
@@ -232,7 +218,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $mail->AltBody = strip_tags($email_body);
 
         if ($mail->send()) {
-            // Always show success message to avoid revealing spam detection
+            // Always show success message
             header('Location: thank-you.html');
             exit;
         } else {
