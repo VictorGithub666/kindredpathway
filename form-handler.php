@@ -1,5 +1,5 @@
 <?php
-// form-handler.php - SECURE VERSION WITH SPAM FILTERING
+// form-handler.php - SECURE VERSION WITH SPAM FILTERING & JUNK FOLDER ROUTING
 
 // Enable error reporting (disable in production)
 ini_set('display_errors', 1);
@@ -124,9 +124,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $formType = isset($_POST['consultation_type']) ? 'Consultation Request' : 'Contact Form';
         
-        // Add SPAM indicator to subject if detected
-        $subjectPrefix = $isSpam ? '[SPAM] ' : '';
-
         // Configure PHPMailer
         $mail = new PHPMailer(true);
         $mail->isSMTP();
@@ -139,22 +136,33 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $mail->setFrom('info@kindredpathway.org', 'Kindred Pathway Website');
         
-        // Route to different addresses based on spam detection
         if ($isSpam) {
-            // Send spam to main address but marked as SPAM for filtering
-            $mail->addAddress('info@kindredpathway.org', 'Kindred Pathway SPAM');
-        } else {
-            // Send legitimate emails to main address
+            // ROUTE SPAM DIRECTLY TO JUNK FOLDER
             $mail->addAddress('info@kindredpathway.org', 'Kindred Pathway');
+            
+            // Add headers to force Roundcube to treat as spam
+            $mail->addCustomHeader('X-Priority', '5 (Lowest)');
+            $mail->addCustomHeader('X-MSMail-Priority', 'Low');
+            $mail->addCustomHeader('Importance', 'Low');
+            $mail->addCustomHeader('X-Spam-Flag', 'YES');
+            $mail->addCustomHeader('X-Spam-Status', 'Yes');
+            $mail->addCustomHeader('X-Spam-Level', '*****');
+            $mail->addCustomHeader('Precedence', 'bulk');
+            $mail->addCustomHeader('X-Auto-Response-Suppress', 'OOF, AutoReply');
+            
+            $mail->Subject = "[SPAM] New $formType from Website - AUTO FILTERED";
+        } else {
+            // Send legitimate emails normally
+            $mail->addAddress('info@kindredpathway.org', 'Kindred Pathway');
+            $mail->Subject = "New $formType from Website";
         }
         
         $mail->addReplyTo($email, $name);
 
         $mail->isHTML(true);
-        $mail->Subject = $subjectPrefix . "New $formType from Website";
 
         // Build styled HTML email body
-        $spamIndicator = $isSpam ? '<div style="background: #ff0000; color: white; padding: 10px; text-align: center; font-weight: bold;">⚠️ POTENTIAL SPAM DETECTED - AUTOMATICALLY FILTERED</div>' : '';
+        $spamIndicator = $isSpam ? '<div style="background: #ff0000; color: white; padding: 10px; text-align: center; font-weight: bold;">🚫 AUTOMATED SPAM FILTER - This email was detected as spam and routed to Junk folder</div>' : '';
         
         $email_body = '
         <!DOCTYPE html>
@@ -183,7 +191,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
               
         if ($isSpam) {
             $email_body .= '<div class="spam-warning">
-                <strong>Spam Detection:</strong> This message was flagged as potential spam based on content analysis.
+                <strong> SPAM DETECTED:</strong> This message was automatically flagged as spam and routed to your Junk folder.<br>
+                <strong>Detected Patterns:</strong> SEO/Affiliate marketing content
             </div>';
         }
               
