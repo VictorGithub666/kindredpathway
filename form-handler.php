@@ -147,7 +147,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $mail->addCustomHeader('X-Auto-Response-Suppress', 'All');
             $mail->addCustomHeader('Auto-Submitted', 'auto-generated');
             
-            $mail->Subject = "🚫 SPAM: $formType from $name";
+            $mail->Subject = "SPAM: $formType from $name";
         } else {
             // Send legitimate emails normally
             $mail->addAddress('info@kindredpathway.org', 'Kindred Pathway');
@@ -158,7 +158,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $mail->isHTML(true);
 
         // Build email body
-        $spamWarning = $isSpam ? '<div style="background: #ff0000; color: white; padding: 15px; text-align: center; font-weight: bold; font-size: 16px;">🚫 AUTOMATED SPAM FILTER - This email was detected as spam</div>' : '';
+        $spamWarning = $isSpam ? '<div style="background: #ff0000; color: white; padding: 15px; text-align: center; font-weight: bold; font-size: 16px;">AUTOMATED SPAM FILTER - This email was detected as spam</div>' : '';
         
         $email_body = '
         <!DOCTYPE html>
