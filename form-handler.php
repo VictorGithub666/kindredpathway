@@ -81,148 +81,264 @@ class SpamFilter {
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     try {
-        // Collect and sanitize form data
-        $name        = htmlspecialchars(trim($_POST['name'] ?? ''));
-        $email       = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
-        $phone       = htmlspecialchars(trim($_POST['phone'] ?? ''));
-        $service     = htmlspecialchars(trim($_POST['service'] ?? ''));
-        $visaType    = htmlspecialchars(trim($_POST['visaType'] ?? ''));
-        $otherVisaType = htmlspecialchars(trim($_POST['otherVisaType'] ?? ''));
-        $destination = htmlspecialchars(trim($_POST['destination'] ?? ''));
-        $otherDestination = htmlspecialchars(trim($_POST['otherDestination'] ?? ''));
-        $date        = htmlspecialchars(trim($_POST['date'] ?? ''));
-        $time        = htmlspecialchars(trim($_POST['time'] ?? ''));
-        $message     = htmlspecialchars(trim($_POST['message'] ?? ''));
-        $honeypot    = htmlspecialchars(trim($_POST['website'] ?? '')); // Honeypot field
-
-        // Basic validation
-        if (empty($name) || empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            throw new Exception("Please fill in all required fields correctly.");
-        }
-
-        // Initialize spam filter
-        $spamFilter = new SpamFilter();
-        
-        // Check if submission is spam
-        $isSpam = $spamFilter->isSpam($name, $email, $phone, $message, $honeypot);
-        
-        // Handle visa type logic
-        $finalVisaType = $visaType;
-        if ($visaType === 'Other' && !empty($otherVisaType)) {
-            $finalVisaType = $otherVisaType . " (Other)";
-        } elseif ($visaType === 'Other' && empty($otherVisaType)) {
-            throw new Exception("Please specify the visa type when selecting 'Other'.");
-        }
-
-        // Handle destination logic
-        $finalDestination = $destination;
-        if ($destination === 'Other' && !empty($otherDestination)) {
-            $finalDestination = $otherDestination . " (Other)";
-        } elseif ($destination === 'Other' && empty($otherDestination)) {
-            throw new Exception("Please specify the destination country when selecting 'Other'.");
-        }
-
-        $formType = isset($_POST['consultation_type']) ? 'Consultation Request' : 'Contact Form';
-        
-        // Configure PHPMailer
-        $mail = new PHPMailer(true);
-        $mail->isSMTP();
-        $mail->Host       = 'lim106.truehost.cloud';
-        $mail->SMTPAuth   = true;
-        $mail->Username   = 'info@kindredpathway.org';
-        $mail->Password   = 'info@kindred.pathway';
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port       = 587;
-
-        $mail->setFrom('info@kindredpathway.org', 'Kindred Pathway Website');
-        
-        if ($isSpam) {
-            // SOLUTION 1: Send spam to a different address that goes to Junk
-            // Use "spam@" prefix - most email systems will treat this as lower priority
-            $mail->addAddress('spam@kindredpathway.org', 'SPAM - Kindred Pathway');
+        // Check if it's a job inquiry
+        if (isset($_POST['job_inquiry'])) {
+            // Collect and sanitize job inquiry data
+            $name        = htmlspecialchars(trim($_POST['name'] ?? ''));
+            $email       = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
+            $phone       = htmlspecialchars(trim($_POST['phone'] ?? ''));
+            $job_type    = htmlspecialchars(trim($_POST['job_type'] ?? ''));
+            $country     = htmlspecialchars(trim($_POST['country'] ?? ''));
+            $message     = htmlspecialchars(trim($_POST['message'] ?? ''));
+            $consultation_type = htmlspecialchars(trim($_POST['consultation_type'] ?? ''));
+            $honeypot    = htmlspecialchars(trim($_POST['website'] ?? '')); // Honeypot field
             
-            // Add aggressive spam headers
-            $mail->addCustomHeader('X-Priority', '5');
-            $mail->addCustomHeader('Precedence', 'bulk');
-            $mail->addCustomHeader('X-Auto-Response-Suppress', 'All');
-            $mail->addCustomHeader('Auto-Submitted', 'auto-generated');
+            // If "Other" country is selected, use the otherCountry value
+            if ($country === "Other" && isset($_POST['otherCountry'])) {
+                $country = htmlspecialchars(trim($_POST['otherCountry'] ?? ''));
+            }
             
-            $mail->Subject = "SPAM: $formType from $name";
-        } else {
-            // Send legitimate emails normally
-            $mail->addAddress('info@kindredpathway.org', 'Kindred Pathway');
-            $mail->Subject = "New $formType from Website";
-        }
-        
-        $mail->addReplyTo($email, $name);
-        $mail->isHTML(true);
+            // Basic validation for job inquiry
+            if (empty($name) || empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL) || empty($job_type) || empty($country)) {
+                throw new Exception("Please fill in all required fields correctly.");
+            }
+            
+            // Initialize spam filter
+            $spamFilter = new SpamFilter();
+            
+            // Check if submission is spam
+            $isSpam = $spamFilter->isSpam($name, $email, $phone, $message, $honeypot);
+            
+            // Configure PHPMailer for job inquiry
+            $mail = new PHPMailer(true);
+            $mail->isSMTP();
+            $mail->Host       = 'lim106.truehost.cloud';
+            $mail->SMTPAuth   = true;
+            $mail->Username   = 'info@kindredpathway.org';
+            $mail->Password   = 'info@kindred.pathway';
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port       = 587;
 
-        // Build email body
-        $spamWarning = $isSpam ? '<div style="background: #ff0000; color: white; padding: 15px; text-align: center; font-weight: bold; font-size: 16px;">AUTOMATED SPAM FILTER - This email was detected as spam</div>' : '';
-        
-        $email_body = '
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <meta charset="UTF-8">
-          <style>
-            body { font-family: Arial, sans-serif; background-color: #f4f6f8; margin:0; padding:0; }
-            .container { background:#fff; max-width:600px; margin:20px auto; border-radius:8px; overflow:hidden; border:1px solid #ddd; }
-            .header { background:#003366; color:#fff; padding:20px; text-align:center; }
-            .header h2 { margin:0; }
-            .content { padding:20px; color:#333; }
-            .content p { margin:8px 0; line-height:1.5; }
-            .label { font-weight:bold; color:#003366; }
-            .footer { background:#f4f6f8; text-align:center; padding:15px; font-size:12px; color:#777; }
-          </style>
-        </head>
-        <body>
-          <div class="container">
-            ' . $spamWarning . '
-            <div class="header">
-              <h2> New ' . $formType . '</h2>
-            </div>
-            <div class="content">
-              <p><span class="label">Name:</span> ' . $name . '</p>
-              <p><span class="label">Email:</span> ' . $email . '</p>
-              <p><span class="label">Phone:</span> ' . $phone . '</p>';
-        
-        if ($service) {
-            $email_body .= '<p><span class="label">Service:</span> ' . $service . '</p>';
-        }
-        if ($finalVisaType) {
-            $email_body .= '<p><span class="label">Visa Type:</span> ' . $finalVisaType . '</p>';
-        }
-        if ($finalDestination) {
-            $email_body .= '<p><span class="label">Destination Country:</span> ' . $finalDestination . '</p>';
-        }
-        if ($date) {
-            $email_body .= '<p><span class="label">Preferred Date:</span> ' . $date . '</p>';
-        }
-        if ($time) {
-            $email_body .= '<p><span class="label">Preferred Time:</span> ' . $time . '</p>';
-        }
+            $mail->setFrom('info@kindredpathway.org', 'Kindred Pathway Website');
+            
+            if ($isSpam) {
+                // Send spam to a different address that goes to Junk
+                $mail->addAddress('spam@kindredpathway.org', 'SPAM - Kindred Pathway');
+                
+                // Add aggressive spam headers
+                $mail->addCustomHeader('X-Priority', '5');
+                $mail->addCustomHeader('Precedence', 'bulk');
+                $mail->addCustomHeader('X-Auto-Response-Suppress', 'All');
+                $mail->addCustomHeader('Auto-Submitted', 'auto-generated');
+                
+                $mail->Subject = "SPAM: Job Inquiry from $name";
+            } else {
+                // Send legitimate emails normally
+                $mail->addAddress('info@kindredpathway.org', 'Kindred Pathway');
+                $mail->Subject = "New Job Inquiry from Website";
+            }
+            
+            $mail->addReplyTo($email, $name);
+            $mail->isHTML(true);
 
-        $email_body .= '
-              <p><span class="label">Message:</span></p>
-              <p>' . nl2br($message) . '</p>
-            </div>
-            <div class="footer">
-              <p>Kindred Pathway | Immigration & Relocation Support</p>
-            </div>
-          </div>
-        </body>
-        </html>';
+            // Build job inquiry email body
+            $spamWarning = $isSpam ? '<div style="background: #ff0000; color: white; padding: 15px; text-align: center; font-weight: bold; font-size: 16px;">AUTOMATED SPAM FILTER - This email was detected as spam</div>' : '';
+            
+            $email_body = '
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <meta charset="UTF-8">
+              <style>
+                body { font-family: Arial, sans-serif; background-color: #f4f6f8; margin:0; padding:0; }
+                .container { background:#fff; max-width:600px; margin:20px auto; border-radius:8px; overflow:hidden; border:1px solid #ddd; }
+                .header { background:#003366; color:#fff; padding:20px; text-align:center; }
+                .header h2 { margin:0; }
+                .content { padding:20px; color:#333; }
+                .content p { margin:8px 0; line-height:1.5; }
+                .label { font-weight:bold; color:#003366; }
+                .footer { background:#f4f6f8; text-align:center; padding:15px; font-size:12px; color:#777; }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                ' . $spamWarning . '
+                <div class="header">
+                  <h2>New Job Inquiry</h2>
+                </div>
+                <div class="content">
+                  <p><span class="label">Name:</span> ' . $name . '</p>
+                  <p><span class="label">Email:</span> ' . $email . '</p>
+                  <p><span class="label">Phone:</span> ' . $phone . '</p>
+                  <p><span class="label">Job Type/Profession:</span> ' . $job_type . '</p>
+                  <p><span class="label">Destination Country:</span> ' . $country . '</p>
+                  <p><span class="label">Consultation Type:</span> ' . $consultation_type . '</p>
+                  <p><span class="label">Qualifications & Experience:</span></p>
+                  <p>' . nl2br($message) . '</p>
+                </div>
+                <div class="footer">
+                  <p>Kindred Pathway | Immigration & Relocation Support</p>
+                </div>
+              </div>
+            </body>
+            </html>';
 
-        $mail->Body    = $email_body;
-        $mail->AltBody = strip_tags($email_body);
+            $mail->Body    = $email_body;
+            $mail->AltBody = strip_tags($email_body);
 
-        if ($mail->send()) {
-            // Always show success message
-            header('Location: thank-you.html');
-            exit;
-        } else {
-            throw new Exception("Message could not be sent. Please try again later.");
+            if ($mail->send()) {
+                // Always show success message
+                header('Location: thank-you.html');
+                exit;
+            } else {
+                throw new Exception("Job inquiry could not be sent. Please try again later.");
+            }
+        }
+        else {
+            // Regular contact/consultation form processing
+            // Collect and sanitize form data
+            $name        = htmlspecialchars(trim($_POST['name'] ?? ''));
+            $email       = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
+            $phone       = htmlspecialchars(trim($_POST['phone'] ?? ''));
+            $service     = htmlspecialchars(trim($_POST['service'] ?? ''));
+            $visaType    = htmlspecialchars(trim($_POST['visaType'] ?? ''));
+            $otherVisaType = htmlspecialchars(trim($_POST['otherVisaType'] ?? ''));
+            $destination = htmlspecialchars(trim($_POST['destination'] ?? ''));
+            $otherDestination = htmlspecialchars(trim($_POST['otherDestination'] ?? ''));
+            $date        = htmlspecialchars(trim($_POST['date'] ?? ''));
+            $time        = htmlspecialchars(trim($_POST['time'] ?? ''));
+            $message     = htmlspecialchars(trim($_POST['message'] ?? ''));
+            $honeypot    = htmlspecialchars(trim($_POST['website'] ?? '')); // Honeypot field
+
+            // Basic validation
+            if (empty($name) || empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                throw new Exception("Please fill in all required fields correctly.");
+            }
+
+            // Initialize spam filter
+            $spamFilter = new SpamFilter();
+            
+            // Check if submission is spam
+            $isSpam = $spamFilter->isSpam($name, $email, $phone, $message, $honeypot);
+            
+            // Handle visa type logic
+            $finalVisaType = $visaType;
+            if ($visaType === 'Other' && !empty($otherVisaType)) {
+                $finalVisaType = $otherVisaType . " (Other)";
+            } elseif ($visaType === 'Other' && empty($otherVisaType)) {
+                throw new Exception("Please specify the visa type when selecting 'Other'.");
+            }
+
+            // Handle destination logic
+            $finalDestination = $destination;
+            if ($destination === 'Other' && !empty($otherDestination)) {
+                $finalDestination = $otherDestination . " (Other)";
+            } elseif ($destination === 'Other' && empty($otherDestination)) {
+                throw new Exception("Please specify the destination country when selecting 'Other'.");
+            }
+
+            $formType = isset($_POST['consultation_type']) ? 'Consultation Request' : 'Contact Form';
+            
+            // Configure PHPMailer
+            $mail = new PHPMailer(true);
+            $mail->isSMTP();
+            $mail->Host       = 'lim106.truehost.cloud';
+            $mail->SMTPAuth   = true;
+            $mail->Username   = 'info@kindredpathway.org';
+            $mail->Password   = 'info@kindred.pathway';
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port       = 587;
+
+            $mail->setFrom('info@kindredpathway.org', 'Kindred Pathway Website');
+            
+            if ($isSpam) {
+                // SOLUTION 1: Send spam to a different address that goes to Junk
+                // Use "spam@" prefix - most email systems will treat this as lower priority
+                $mail->addAddress('spam@kindredpathway.org', 'SPAM - Kindred Pathway');
+                
+                // Add aggressive spam headers
+                $mail->addCustomHeader('X-Priority', '5');
+                $mail->addCustomHeader('Precedence', 'bulk');
+                $mail->addCustomHeader('X-Auto-Response-Suppress', 'All');
+                $mail->addCustomHeader('Auto-Submitted', 'auto-generated');
+                
+                $mail->Subject = "SPAM: $formType from $name";
+            } else {
+                // Send legitimate emails normally
+                $mail->addAddress('info@kindredpathway.org', 'Kindred Pathway');
+                $mail->Subject = "New $formType from Website";
+            }
+            
+            $mail->addReplyTo($email, $name);
+            $mail->isHTML(true);
+
+            // Build email body
+            $spamWarning = $isSpam ? '<div style="background: #ff0000; color: white; padding: 15px; text-align: center; font-weight: bold; font-size: 16px;">AUTOMATED SPAM FILTER - This email was detected as spam</div>' : '';
+            
+            $email_body = '
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <meta charset="UTF-8">
+              <style>
+                body { font-family: Arial, sans-serif; background-color: #f4f6f8; margin:0; padding:0; }
+                .container { background:#fff; max-width:600px; margin:20px auto; border-radius:8px; overflow:hidden; border:1px solid #ddd; }
+                .header { background:#003366; color:#fff; padding:20px; text-align:center; }
+                .header h2 { margin:0; }
+                .content { padding:20px; color:#333; }
+                .content p { margin:8px 0; line-height:1.5; }
+                .label { font-weight:bold; color:#003366; }
+                .footer { background:#f4f6f8; text-align:center; padding:15px; font-size:12px; color:#777; }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                ' . $spamWarning . '
+                <div class="header">
+                  <h2> New ' . $formType . '</h2>
+                </div>
+                <div class="content">
+                  <p><span class="label">Name:</span> ' . $name . '</p>
+                  <p><span class="label">Email:</span> ' . $email . '</p>
+                  <p><span class="label">Phone:</span> ' . $phone . '</p>';
+            
+            if ($service) {
+                $email_body .= '<p><span class="label">Service:</span> ' . $service . '</p>';
+            }
+            if ($finalVisaType) {
+                $email_body .= '<p><span class="label">Visa Type:</span> ' . $finalVisaType . '</p>';
+            }
+            if ($finalDestination) {
+                $email_body .= '<p><span class="label">Destination Country:</span> ' . $finalDestination . '</p>';
+            }
+            if ($date) {
+                $email_body .= '<p><span class="label">Preferred Date:</span> ' . $date . '</p>';
+            }
+            if ($time) {
+                $email_body .= '<p><span class="label">Preferred Time:</span> ' . $time . '</p>';
+            }
+
+            $email_body .= '
+                  <p><span class="label">Message:</span></p>
+                  <p>' . nl2br($message) . '</p>
+                </div>
+                <div class="footer">
+                  <p>Kindred Pathway | Immigration & Relocation Support</p>
+                </div>
+              </div>
+            </body>
+            </html>';
+
+            $mail->Body    = $email_body;
+            $mail->AltBody = strip_tags($email_body);
+
+            if ($mail->send()) {
+                // Always show success message
+                header('Location: thank-you.html');
+                exit;
+            } else {
+                throw new Exception("Message could not be sent. Please try again later.");
+            }
         }
     } catch (Exception $e) {
         // Log the error
