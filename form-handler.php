@@ -1,5 +1,5 @@
 <?php
-// form-handler.php
+// form-handler.php - SECURE VERSION WITH SPAM FILTERING
 
 // Enable error reporting (disable in production)
 ini_set('display_errors', 1);
@@ -12,6 +12,72 @@ use PHPMailer\PHPMailer\Exception;
 require 'src/Exception.php';
 require 'src/PHPMailer.php';
 require 'src/SMTP.php';
+
+class SpamFilter {
+    private $spamKeywords = [
+        // SEO related
+        'seo', 'search engine', 'ranking', 'organic ranking', 'google ranking',
+        'backlink', 'link building', 'keyword', 'traffic', 'visitors',
+        'digital marketing', 'online presence', 'return on investment',
+        'answer engine optimization', 'aeo', 'monthly seo',
+        
+        // Affiliate/MLM related
+        'affiliate', 'commission', 'profit share', 'payout', 'referral',
+        'collaboration', 'partnership', 'joint venture', 'business opportunity',
+        'make money', 'earn money', 'passive income', 'side hustle',
+        
+        // Generic spam
+        'investment', 'bitcoin', 'crypto', 'forex', 'trading',
+        'lottery', 'prize', 'winner', 'free', 'discount',
+        'urgent', 'limited time', 'act now', 'don\'t miss',
+        'click here', 'sign up', 'subscribe', 'buy now',
+        
+        // Company names from spam emails
+        'monkey digital', 'digital x', 'seo experts'
+    ];
+    
+    private $suspiciousDomains = [
+        'monkeydigital.co', 'digital-x-press.com',
+        // Add other spam domains as you encounter them
+    ];
+    
+    public function isSpam($name, $email, $phone, $message, $honeypot = '') {
+        // Honeypot check - if this field is filled, it's definitely spam
+        if (!empty($honeypot)) {
+            return true;
+        }
+        
+        $content = strtolower($name . ' ' . $email . ' ' . $phone . ' ' . $message);
+        
+        // Check for spam keywords
+        foreach ($this->spamKeywords as $keyword) {
+            if (strpos($content, strtolower($keyword)) !== false) {
+                return true;
+            }
+        }
+        
+        // Check for suspicious domains
+        $emailDomain = strtolower(substr(strrchr($email, "@"), 1));
+        foreach ($this->suspiciousDomains as $domain) {
+            if (strpos($emailDomain, $domain) !== false) {
+                return true;
+            }
+        }
+        
+        // Check for suspicious phone patterns (very long numbers, etc.)
+        if (strlen($phone) > 15) {
+            return true;
+        }
+        
+        // Check for excessive links in message
+        $linkCount = substr_count(strtolower($message), 'http');
+        if ($linkCount > 2) {
+            return true;
+        }
+        
+        return false;
+    }
+}
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     try {
@@ -27,11 +93,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $date        = htmlspecialchars(trim($_POST['date'] ?? ''));
         $time        = htmlspecialchars(trim($_POST['time'] ?? ''));
         $message     = htmlspecialchars(trim($_POST['message'] ?? ''));
+        $honeypot    = htmlspecialchars(trim($_POST['website'] ?? '')); // Honeypot field
 
+        // Basic validation
         if (empty($name) || empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new Exception("Please fill in all required fields correctly.");
         }
 
+        // Initialize spam filter
+        $spamFilter = new SpamFilter();
+        
+        // Check if submission is spam
+        $isSpam = $spamFilter->isSpam($name, $email, $phone, $message, $honeypot);
+        
         // Handle visa type logic
         $finalVisaType = $visaType;
         if ($visaType === 'Other' && !empty($otherVisaType)) {
@@ -49,29 +123,39 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
 
         $formType = isset($_POST['consultation_type']) ? 'Consultation Request' : 'Contact Form';
+        
+        // Add SPAM indicator to subject if detected
+        $subjectPrefix = $isSpam ? '[SPAM] ' : '';
 
         // Configure PHPMailer
         $mail = new PHPMailer(true);
         $mail->isSMTP();
-        $mail->Host       = 'lim106.truehost.cloud';   // your host
+        $mail->Host       = 'lim106.truehost.cloud';
         $mail->SMTPAuth   = true;
         $mail->Username   = 'info@kindredpathway.org';
-        $mail->Password   = 'info@kindred.pathway';    // ⚠️ replace with real password
+        $mail->Password   = 'info@kindred.pathway';
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port       = 587;
 
-        // Debugging (disable in production)
-        // $mail->SMTPDebug = 2;
-        // $mail->Debugoutput = 'error_log';
-
         $mail->setFrom('info@kindredpathway.org', 'Kindred Pathway Website');
-        $mail->addAddress('info@kindredpathway.org', 'Kindred Pathway');
+        
+        // Route to different addresses based on spam detection
+        if ($isSpam) {
+            // Send spam to main address but marked as SPAM for filtering
+            $mail->addAddress('info@kindredpathway.org', 'Kindred Pathway SPAM');
+        } else {
+            // Send legitimate emails to main address
+            $mail->addAddress('info@kindredpathway.org', 'Kindred Pathway');
+        }
+        
         $mail->addReplyTo($email, $name);
 
         $mail->isHTML(true);
-        $mail->Subject = "New $formType from Website";
+        $mail->Subject = $subjectPrefix . "New $formType from Website";
 
         // Build styled HTML email body
+        $spamIndicator = $isSpam ? '<div style="background: #ff0000; color: white; padding: 10px; text-align: center; font-weight: bold;">⚠️ POTENTIAL SPAM DETECTED - AUTOMATICALLY FILTERED</div>' : '';
+        
         $email_body = '
         <!DOCTYPE html>
         <html>
@@ -86,14 +170,24 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             .content p { margin:8px 0; line-height:1.5; }
             .label { font-weight:bold; color:#003366; }
             .footer { background:#f4f6f8; text-align:center; padding:15px; font-size:12px; color:#777; }
+            .spam-warning { background: #fff3cd; border: 1px solid #ffeaa7; padding: 10px; margin: 10px 0; border-radius: 4px; }
           </style>
         </head>
         <body>
           <div class="container">
+            ' . $spamIndicator . '
             <div class="header">
               <h2> New ' . $formType . '</h2>
             </div>
-            <div class="content">
+            <div class="content">';
+              
+        if ($isSpam) {
+            $email_body .= '<div class="spam-warning">
+                <strong>Spam Detection:</strong> This message was flagged as potential spam based on content analysis.
+            </div>';
+        }
+              
+        $email_body .= '
               <p><span class="label">Name:</span> ' . $name . '</p>
               <p><span class="label">Email:</span> ' . $email . '</p>
               <p><span class="label">Phone:</span> ' . $phone . '</p>';
@@ -129,13 +223,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $mail->AltBody = strip_tags($email_body);
 
         if ($mail->send()) {
-            // In production redirect to thank you page
+            // Always show success message to avoid revealing spam detection
             header('Location: thank-you.html');
             exit;
         } else {
-            throw new Exception("Mailer Error: " . $mail->ErrorInfo);
+            throw new Exception("Message could not be sent. Please try again later.");
         }
     } catch (Exception $e) {
+        // Log the error
+        error_log("Form submission error: " . $e->getMessage());
+        
         // Redirect back with error
         header('Location: ' . $_SERVER['HTTP_REFERER'] . '?error=1&message=' . urlencode($e->getMessage()));
         exit;
@@ -145,3 +242,4 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     header('Location: index.html');
     exit;
 }
+?>
